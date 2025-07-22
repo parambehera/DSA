@@ -40,7 +40,7 @@ class Solution {
             int wt = edges[i][2];
             graph[u].add(new Edge(u, v, wt));
             // If the graph is undirected, add this:
-            // graph[v].add(new Edge(v, u, wt));
+            graph[v].add(new Edge(v, u, wt));
         }
 
         return dijkstraUtil(graph, src, V);
@@ -60,7 +60,7 @@ class Solution {
             Pair p = pq.remove();
             int curr = p.v;
 
-            // if (vis[curr]) continue;
+            // if (vis[curr]) continue;  //optional
             vis[curr] = true;
 
             for (Edge edge : graph[curr]) {
