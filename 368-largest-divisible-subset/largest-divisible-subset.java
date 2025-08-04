@@ -1,50 +1,40 @@
 import java.util.*;
 
 class Solution {
-    public List<Integer> largestDivisibleSubset(int[] arr) {
-       Arrays.sort(arr);
-        // code here
-         int n = arr.length;
-        int[] dp = new int[n];      // dp[i] = length of LIS ending at i
-        int[] hash = new int[n];    // To track predecessors
+    public List<Integer> largestDivisibleSubset(int[] nums) {
+        int n = nums.length;
+        if (n == 0) return new ArrayList<>();
+
+        Arrays.sort(nums);
+
+        int[] dp = new int[n];      // dp[i] = length of largest divisible subset ending at i
+        int[] prev = new int[n];    // prev[i] = previous index in the subset
         Arrays.fill(dp, 1);
+        Arrays.fill(prev, -1);
 
-        for (int i = 0; i < n; i++) {
-            hash[i] = i;
-        }
-        int maxLen = 1;
-        int lastIndex = 0;
+        int maxIndex = 0;
 
-        for (int i = 0; i < n; i++) {
-            for (int prev = 0; prev < i; prev++) {
-                if (isDivisible(arr[i],arr[prev]) && dp[i] < dp[prev] + 1) {
-                    dp[i] = dp[prev] + 1;
-                    hash[i] = prev;
+        // Build dp and prev arrays
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (nums[i] % nums[j] == 0 && dp[j] + 1 > dp[i]) {
+                    dp[i] = dp[j] + 1;
+                    prev[i] = j;
                 }
             }
-            // Update the lastIndex of the LIS found so far
-            if (dp[i] > maxLen) {
-                maxLen = dp[i];
-                lastIndex = i;
+            if (dp[i] > dp[maxIndex]) {
+                maxIndex = i;
             }
         }
-        // Reconstruct LIS using hash[]
-        ArrayList<Integer> lis = new ArrayList<>();
-        lis.add(arr[lastIndex]);
-        while (hash[lastIndex] != lastIndex) {
-            lastIndex = hash[lastIndex];
-            lis.add(arr[lastIndex]);
+
+        // Reconstruct the subset
+        List<Integer> result = new ArrayList<>();
+        while (maxIndex != -1) {
+            result.add(nums[maxIndex]);
+            maxIndex = prev[maxIndex];
         }
 
-
-        Collections.reverse(lis);
-        return lis;
-    }
-    boolean isDivisible(int x,int y){
-        if(x%y==0 || y%x==0){
-            return true;
-        }else{
-            return false;
-        }
+        Collections.reverse(result);
+        return result;
     }
 }
