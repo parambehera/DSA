@@ -2,12 +2,10 @@ class Solution {
 
     int mod = 1_000_000_007;
     Integer[][] dp; // dp[i][sum] to store results
-
     public int numberOfWays(int n, int x) {
-        dp = new Integer[n + 2][n + 1]; // +2 because i can go to n+1
+        dp = new Integer[n + 1][n + 1]; // +2 because i can go to n+1
         return f(1, x, n, 0);
     }
-
     int f(int i, int x, int n, int sum) {
         if (sum == n) return 1;
         if (sum > n || i > n) return 0;
