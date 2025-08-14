@@ -1,44 +1,41 @@
 class Solution {
     public boolean isCycle(int V, int[][] edges) {
-        ArrayList<Integer>[] arr = new ArrayList[V];
-
-        for (int i = 0; i < V; i++) {
-            arr[i] = new ArrayList<>();
+        // Code here
+        ArrayList <Integer> [] graph = new ArrayList [V];
+          for (int i = 0; i < V; i++) {
+            graph[i] = new ArrayList<>();
         }
 
-        // Since it's an undirected graph, add both ways
-        for (int i = 0; i < edges.length; i++) {
+        for(int i =0;i<edges.length;i++){
             int src = edges[i][0];
             int dest = edges[i][1];
-            arr[src].add(dest);
-            arr[dest].add(src);
+            graph[src].add(dest);
+            graph[dest].add(src);
         }
-
-        boolean[] vis = new boolean[V];
-
-        for (int i = 0; i < V; i++) {
-            if (!vis[i]) {
-                if (dfs(arr, i, vis, -1)) {
+        boolean vis[]= new boolean [V];
+        for(int i =0;i<V;i++){
+            if(!vis[i]){
+                if(isCycledfs(i,vis,graph,-1)){
                     return true;
                 }
             }
         }
         return false;
+        
     }
-
-    public boolean dfs(ArrayList<Integer>[] arr, int start, boolean[] vis, int par) {
-        vis[start] = true;
-
-        for (int neigh : arr[start]) {
-            if (!vis[neigh]) {
-                if (dfs(arr, neigh, vis, start)) {
-                    return true;
-                }
-            } else if (neigh != par) {
-                return true;
-            }
-        }
-
-        return false;
+    public boolean isCycledfs(int curr,boolean vis[],ArrayList<Integer> graph[],int par){
+         vis[curr] = true;
+      for(int i=0;i<graph[curr].size();i++){
+          int neigh = graph[curr].get(i);
+          if(vis[neigh] && neigh !=par){
+              return true;
+          }
+          else if(!vis[neigh]){
+              if(isCycledfs(neigh,vis,graph,curr))
+              return true;
+          }
+      }
+      return false;
     }
+    
 }
