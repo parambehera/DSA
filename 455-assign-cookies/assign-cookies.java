@@ -3,15 +3,17 @@ class Solution {
         Arrays.sort(g);
         Arrays.sort(s);
         int cnt=0;
-        for(int i =0;i<g.length;i++){
-            for(int j=0;j<s.length;j++){
-                if(s[j] !=-1 && s[j]>=g[i]){
-                   s[j] = -1;
-                   cnt++;
-                   break;
-                }
-            }
+        int i =0;
+        int j=0;
+       while(i<s.length && j<g.length){
+        if(s[i]>=g[j]){
+            cnt++;
+            i++;
+            j++;
+        }else{
+            i++;
         }
+       }
         return cnt;
     }
 }
