@@ -1,14 +1,25 @@
 class Solution {
     public int hIndex(int[] citations) {
-          Arrays.sort(citations); // ascending order
         int n = citations.length;
-        for (int i = 0; i < n; i++) {
-            int h = n - i; // number of papers with citations >= citations[i]
-            if (citations[i] >= h) { // H-index must be exactly present
-                return h;
+        int lb =0;
+        int hb = n;
+        int ans =0;
+        while(lb<=hb){
+            int mid = lb+(hb-lb)/2;
+            if(isPossible(citations,mid)){
+              ans = mid;
+              lb= mid+1;
+            }else{
+              hb = mid-1;
             }
         }
-
-        return 0; // No exact match found
+        return ans;
+    }
+    public boolean isPossible(int []citations,int h){
+        int cnt =0;
+        for(int i=0;i<citations.length;i++){
+            if(citations[i]>=h) cnt++;
+        }
+        return cnt>=h;
     }
 }
