@@ -14,22 +14,20 @@
  * }
  */
 class Solution {
-    ArrayList <Integer>preorderl = new ArrayList <>();
+    private int min = Integer.MAX_VALUE, prev = -1;
+
+    private void find(TreeNode root) {
+        if (root == null)
+            return;
+        find(root.left);
+        if (prev >= 0 && min > root.val - prev)
+            min = root.val - prev;
+        prev = root.val;
+        find(root.right);
+    }
+
     public int getMinimumDifference(TreeNode root) {
-         preorder(root);
-         Collections.sort(preorderl);
-         int minDiff = Integer.MAX_VALUE;
-        for(int i =0;i<preorderl.size()-1;i++){
-            int diff =Math.abs(preorderl.get(i)-preorderl.get(i+1));
-            minDiff = Math.min(diff,minDiff);
-        }
-        return minDiff;
+        find(root);
+        return min;
     }
-    public  void preorder(TreeNode root){
-        while(root==null) return;
-        preorderl.add(root.val);
-        preorder(root.left);
-        preorder(root.right);
-    }
-    
 }
