@@ -1,49 +1,40 @@
-import java.util.*;
-
-class Info {
-    String word;
-    int steps;
-
-    public Info(String word, int steps) {
-        this.word = word;
-        this.steps = steps;
-    }
-}
-
 class Solution {
     public int ladderLength(String beginWord, String endWord, List<String> wordList) {
-        Set<String> wordSet = new HashSet<>(wordList);
-        if (!wordSet.contains(endWord)) return 0;
+        Set<String> dict = new HashSet<>(wordList); // store words for O(1) lookup
+        if (!dict.contains(endWord)) return 0;      // endWord must be in dict
 
-        Queue<Info> q = new LinkedList<>();
-        q.add(new Info(beginWord, 1));
+        Queue<String> q = new LinkedList<>();
+        q.add(beginWord);
+
+        Set<String> visited = new HashSet<>();
+        visited.add(beginWord);
+
+        int steps = 1; // startWord counts as step 1
 
         while (!q.isEmpty()) {
-            Info curr = q.poll();
-            String word = curr.word;
+            int size = q.size();
+            for (int s = 0; s < size; s++) {
+                String curr = q.poll();
+                if (curr.equals(endWord)) return steps;
 
-            if (word.equals(endWord)) {
-                return curr.steps;
-            }
+                char[] arr = curr.toCharArray();
+                for (int i = 0; i < arr.length; i++) {
+                    char original = arr[i];
+                    for (char c = 'a'; c <= 'z'; c++) {
+                        if (c == original) continue;
+                        arr[i] = c;
+                        String next = new String(arr);
 
-            // Try all one-letter transformations
-            for (int i = 0; i < word.length(); i++) {
-                char[] chars = word.toCharArray();
-
-                for (char c = 'a'; c <= 'z'; c++) {
-                    if (chars[i] == c) continue;
-
-                    chars[i] = c;
-                    String nextWord = new String(chars);
-
-                    if (wordSet.contains(nextWord)) {
-                        wordSet.remove(nextWord); // Mark as visited
-                        q.add(new Info(nextWord, curr.steps + 1));
+                        if (dict.contains(next) && !visited.contains(next)) {
+                            visited.add(next);
+                            q.add(next);
+                        }
                     }
+                    arr[i] = original; // restore original char
                 }
             }
+            steps++;
         }
-
-        return 0; // If no path found
+        return 0;
     }
 }
