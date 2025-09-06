@@ -1,44 +1,37 @@
 class Solution {
     public int[] findDiagonalOrder(int[][] mat) {
-        if (mat == null || mat.length == 0) return new int[0];
+        HashMap<Integer, ArrayList<Integer>> map = new HashMap<>();
+        ArrayList<Integer> res = new ArrayList<>();
 
-        int n = mat.length;
-        int m = mat[0].length;
-        int row = 0, col = 0;
-        boolean up = true;
-        ArrayList<Integer> list = new ArrayList<>();
-
-        while (row < n && col < m) {
-            if (up) {
-                // Traverse up-right
-                while (row > 0 && col < m - 1) {
-                    list.add(mat[row][col]);
-                    row--;
-                    col++;
-                }
-                list.add(mat[row][col]);
-                if (col == m - 1) row++;
-                else col++;
-                up = false;
-            } else {
-                // Traverse down-left
-                while (col > 0 && row < n - 1) {
-                    list.add(mat[row][col]);
-                    row++;
-                    col--;
-                }
-                list.add(mat[row][col]);
-                if (row == n - 1) col++;
-                else row++;
-                up = true;
+        // Step 1: Group elements by i+j
+        for (int i = 0; i < mat.length; i++) {
+            for (int j = 0; j < mat[0].length; j++) {
+                int key = i + j; 
+                map.putIfAbsent(key, new ArrayList<>());
+                map.get(key).add(mat[i][j]);
             }
         }
 
-        // Convert list to array
-        int[] result = new int[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            result[i] = list.get(i);
+        // Step 2: Traverse diagonals
+        for (int i = 0; i < map.size(); i++) {
+            ArrayList<Integer> list = map.get(i);
+            if (i % 2 == 0) {
+                // copy in reverse order
+                for (int k = list.size() - 1; k >= 0; k--) {
+                    res.add(list.get(k));
+                }
+            } else {
+                // copy in normal order
+                res.addAll(list);
+            }
         }
-        return result;
+
+        // Step 3: Convert ArrayList -> int[]
+        int[] arr = new int[res.size()];
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = res.get(i);
+        }
+
+        return arr;
     }
 }
