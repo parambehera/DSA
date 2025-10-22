@@ -1,24 +1,28 @@
 class Solution {
-    List<List<Integer>> res = new ArrayList<>();
-
+    List<List <Integer>> finalList = new ArrayList<>();
     public List<List<Integer>> permute(int[] nums) {
-        HashSet<Integer> set = new HashSet<>();
-        helper(nums, new ArrayList<Integer>(), set);
-        return res;
+        int res[]= new int [nums.length];
+        Arrays.fill(res,Integer.MAX_VALUE);
+        allpermute(res,0,nums);
+        return finalList;
     }
-
-    public void helper(int arr[], List<Integer> list, HashSet<Integer> set) {
-        if (list.size() == arr.length) {
-            res.add(new ArrayList<>(list));
+    public void allpermute(int res[],int idx,int nums[]){
+        if(idx==nums.length){
+            List <Integer> list = new ArrayList <>();
+            for(int i=0;i<res.length;i++){
+                list.add(res[i]);
+            }
+            finalList.add(list);
             return;
         }
-        for (int j = 0; j < arr.length; j++) {
-            if (set.contains(arr[j])) continue; // ✅ skip used
-            list.add(arr[j]);                    // choose
-            set.add(arr[j]);                     // mark as used
-            helper(arr, list, set);              // recurse
-            list.remove(list.size() - 1);        // undo
-            set.remove(arr[j]);                  // unmark
+        for(int i=0;i<nums.length;i++){
+            if(res[i]==Integer.MAX_VALUE){
+               res[i] = nums[idx];
+                int nextIdex = idx+1;
+            allpermute(res,nextIdex,nums);
+            res[i] = Integer.MAX_VALUE;
+            }
+           
         }
     }
 }
