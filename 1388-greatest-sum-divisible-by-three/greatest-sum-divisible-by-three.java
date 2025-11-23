@@ -1,45 +1,33 @@
 class Solution {
     public int maxSumDivThree(int[] nums) {
-        Arrays.sort(nums);
         int sum = 0;
-        List<Integer> list1 = new ArrayList<>();
-        List<Integer> list2 = new ArrayList<>();
+        int min1 = Integer.MAX_VALUE;        // smallest remainder-1
+        int min2 = Integer.MAX_VALUE;        // smallest remainder-2
+        int min11 = Integer.MAX_VALUE;       // second smallest remainder-1
+        int min22 = Integer.MAX_VALUE;       // second smallest remainder-2
 
         for (int x : nums) {
             sum += x;
-            if (x % 3 == 1) list1.add(x);
-            else if (x % 3 == 2) list2.add(x);
+            int r = x % 3;
+            if (r == 1) {
+                if (x < min1) { min11 = min1; min1 = x; }
+                else if (x < min11) min11 = x;
+            } else if (r == 2) {
+                if (x < min2) { min22 = min2; min2 = x; }
+                else if (x < min22) min22 = x;
+            }
         }
 
         int rem = sum % 3;
         if (rem == 0) return sum;
 
-        int ans = 0;
-
+        int remove = Integer.MAX_VALUE;
         if (rem == 1) {
-            int remove1 = Integer.MAX_VALUE;
-            int remove2 = Integer.MAX_VALUE;
-
-            if (list1.size() >= 1)
-                remove1 = list1.get(0);
-
-            if (list2.size() >= 2)
-                remove2 = list2.get(0) + list2.get(1);
-
-            ans = sum - Math.min(remove1, remove2);
+            remove = Math.min(min1, min2 == Integer.MAX_VALUE || min22 == Integer.MAX_VALUE ? Integer.MAX_VALUE : min2 + min22);
         } else { // rem == 2
-            int remove1 = Integer.MAX_VALUE;
-            int remove2 = Integer.MAX_VALUE;
-
-            if (list2.size() >= 1)
-                remove1 = list2.get(0);
-
-            if (list1.size() >= 2)
-                remove2 = list1.get(0) + list1.get(1);
-
-            ans = sum - Math.min(remove1, remove2);
+            remove = Math.min(min2, min1 == Integer.MAX_VALUE || min11 == Integer.MAX_VALUE ? Integer.MAX_VALUE : min1 + min11);
         }
 
-        return ans < 0 ? 0 : ans;
+        return remove == Integer.MAX_VALUE ? 0 : sum - remove;
     }
 }
