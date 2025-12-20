@@ -1,45 +1,59 @@
 class Solution {
 
-    static final long NEG_INF = -1000000000000000L; // safe sentinel
-    static long dp[][][];
+    static final long NEG_INF = -1000000000000000L; // -1e15
 
     public long maximumProfit(int[] prices, int k) {
-        dp = new long[prices.length][k + 1][3];
 
-        for (int i = 0; i < prices.length; i++) {
+        int n = prices.length;
+
+        long dp[][][] = new long[n + 1][k + 1][3];
+
+        // initialize
+        for (int i = 0; i <= n; i++) {
             for (int j = 0; j <= k; j++) {
                 for (int c = 0; c < 3; c++) {
                     dp[i][j][c] = NEG_INF;
                 }
             }
         }
-        return recur(prices, k, 0, 0);
-    }
 
-    public long recur(int prices[], int k, int idx, int cases) {
-
-        if (idx >= prices.length) {
-            return (cases == 0) ? 0 : NEG_INF;
+        // base case: at end with no pending case
+        for (int j = 0; j <= k; j++) {
+            dp[n][j][0] = 0;
         }
 
-        if (dp[idx][k][cases] != NEG_INF) return dp[idx][k][cases];
+        // fill reverse: idx n-1 → 0
+        for (int idx = n - 1; idx >= 0; idx--) {
+            for (int rem = 0; rem <= k; rem++) {
 
-        long take = NEG_INF;
-        long notTake = recur(prices, k, idx + 1, cases);
+                for (int cases = 0; cases < 3; cases++) {
 
-        if (k > 0) {
-            if (cases == 2) {
-                take = prices[idx] + recur(prices, k - 1, idx + 1, 0);
-            } else if (cases == 1) {
-                take = -prices[idx] + recur(prices, k - 1, idx + 1, 0);
-            } else {
-                take = Math.max(
-                        -prices[idx] + recur(prices, k, idx + 1, 2),
-                        prices[idx] + recur(prices, k, idx + 1, 1)
-                );
+                    long notTake = dp[idx + 1][rem][cases];
+                    long take = NEG_INF;
+
+                    if (rem > 0) {
+
+                        if (cases == 2) {
+                            // sell → go to free
+                            take = prices[idx] + dp[idx + 1][rem - 1][0];
+                        }
+                        else if (cases == 1) {
+                            // buy → go to free
+                            take = -prices[idx] + dp[idx + 1][rem - 1][0];
+                        }
+                        else {
+                            // free → choose buy or sell
+                            long option1 = -prices[idx] + dp[idx + 1][rem][2];
+                            long option2 = prices[idx] + dp[idx + 1][rem][1];
+                            take = Math.max(option1, option2);
+                        }
+                    }
+
+                    dp[idx][rem][cases] = Math.max(take, notTake);
+                }
             }
         }
 
-        return dp[idx][k][cases] = Math.max(take, notTake);
+        return dp[0][k][0];
     }
 }
