@@ -3,7 +3,7 @@ import java.util.*;
 class Solution {
     public List<Integer> majorityElement(int[] nums) {
         int n = nums.length;
-        int el1 = 0, el2 = 1; // initialize differently to avoid confusion
+        int el1 = 0, el2 = 0; // initialize differently to avoid confusion
         int cnt1 = 0, cnt2 = 0;
 
         // 1st pass: find potential candidates
