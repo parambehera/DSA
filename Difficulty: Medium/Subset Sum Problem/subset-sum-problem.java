@@ -1,36 +1,34 @@
 class Solution {
-    static int[][] dp;
+
+    static Boolean[][] memo;
 
     static Boolean isSubsetSum(int arr[], int sum) {
         int n = arr.length;
-        dp = new int[n][sum + 1];  // -1 = unvisited, 0 = false, 1 = true
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j <= sum; j++) {
-                dp[i][j] = -1;
-            }
-        }
-        return helper(0, arr, sum);
+        memo = new Boolean[n][sum + 1];
+
+        return helper(arr, 0, sum);
     }
 
-    static boolean helper(int i, int arr[], int target) {
+    static boolean helper(int arr[], int i, int target) {
+
+        // If target becomes 0 → subset found
         if (target == 0) return true;
-        if (i == arr.length) return false;
 
-        if (dp[i][target] != -1) {
-            return dp[i][target] == 1;
-        }
+        // If reached end or target negative
+        if (i == arr.length || target < 0) return false;
 
-        // Choice 1: skip this element
-        boolean notTake = helper(i + 1, arr, target);
+        // If already computed
+        if (memo[i][target] != null)
+            return memo[i][target];
 
-        // Choice 2: take this element (only if <= target)
-        boolean take = false;
-        if (arr[i] <= target) {
-            take = helper(i + 1, arr, target - arr[i]);
-        }
+        // Take element
+        boolean take = helper(arr, i + 1, target - arr[i]);
 
-        boolean ans = take || notTake;
-        dp[i][target] = ans ? 1 : 0;
-        return ans;
+        // Not take element
+        boolean notTake = helper(arr, i + 1, target);
+
+        memo[i][target] = take || notTake;
+
+        return memo[i][target];
     }
 }
