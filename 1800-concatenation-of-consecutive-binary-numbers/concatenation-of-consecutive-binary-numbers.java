@@ -1,19 +1,20 @@
 class Solution {
     public int concatenatedBinary(int n) {
-      long MOD = 1000000007L;
-      
-      StringBuilder sb = new StringBuilder();
-      int i =1;
-      while(i<=n){
-      String s = Integer.toBinaryString(i);
-      sb.append(s);
-      i++;
-      }
-      String fin = sb.toString();
-      long res = 0;
-      for(char ch :fin.toCharArray()){
-        res = ((res*2)+(ch-'0'))%MOD;
-      }
-      return (int)res;
+        int mod = 1_000_000_007;
+        long result = 0;
+        int bits = 0;
+        
+        for (int i = 1; i <= n; i++) {
+            
+            // If i is power of 2 → increase bit length
+            if ((i & (i - 1)) == 0) {
+                bits++;
+            }
+            
+            // Shift left and add i
+            result = ((result << bits) + i) % mod;
+        }
+        
+        return (int) result;
     }
 }
