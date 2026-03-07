@@ -1,24 +1,26 @@
-import java.util.*;
-
 class Solution {
-    static int findPlatform(int arr[], int dep[]) {
-        Arrays.sort(arr); // sort arrival times
-        Arrays.sort(dep); // sort departure times
-        
-        int i = 0, j = 0; // pointers for arr & dep
-        int platforms = 0; // current platforms in use
-        int maxPlatforms = 0; // maximum platforms required
-
-        while (i < arr.length && j < dep.length) {
-            if (arr[i] <= dep[j]) { 
-                platforms++;
-                maxPlatforms = Math.max(maxPlatforms, platforms);
+    public int minPlatform(int arr[], int dep[]) {
+             
+        Arrays.sort(arr);
+        Arrays.sort(dep);
+        int i=0;
+        int j=0;
+        int n = arr.length;
+        int cnt =0;
+        int max = 0;
+        while(i<n && j<n){
+            if(arr[i]<=dep[j]){
                 i++;
-            } else {
-                platforms--;
+                cnt++;
+            }else{
                 j++;
+                cnt--;
             }
+            max = Math.max(cnt,max);
+            
         }
-        return maxPlatforms;
+        return max;
+        //  code here
+        
     }
 }
