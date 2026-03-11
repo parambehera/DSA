@@ -1,35 +1,57 @@
 class Solution {
     public int coinChange(int[] coins, int amount) {
+
         int n = coins.length;
-        // dp[idx][amount] = minimum coins to make amount using coins[0..idx]
-        int[][] dp = new int[n][amount + 1];
-        for (int i = 0; i < n; i++) {
-            Arrays.fill(dp[i], -1);  // -1 means not calculated yet
+        int INF = (int) 1e9;
+
+        int dp[][] = new int[n + 1][amount + 1];
+
+        for (int j = 0; j <= amount; j++) {
+            dp[n][j] = INF;
         }
 
-        int ans = helper(n - 1, coins, amount, dp);
-        return (ans >= (int)1e9) ? -1 : ans;
-    }
+        for (int i = 0; i <= n; i++) {
+            dp[i][0] = 0;
+        }
 
-    public int helper(int idx, int[] coins, int amount, int[][] dp) {
-        if (idx == 0) {
-            if (amount % coins[0] == 0) {
-                return amount / coins[0];
-            } else {
-                return (int)1e9;
+        for (int idx = n - 1; idx >= 0; idx--) {
+
+            for (int amt = 1; amt <= amount; amt++) {
+
+                int take = INF;
+
+                if (coins[idx] <= amt) {
+                    take = 1 + dp[idx][amt - coins[idx]];
+                }
+
+                int notTake = dp[idx + 1][amt];
+
+                dp[idx][amt] = Math.min(take, notTake);
             }
         }
 
-        if (dp[idx][amount] != -1) {
-            return dp[idx][amount];
+        int ans = dp[0][amount];
+        return ans >= INF ? -1 : ans;
+    }
+
+    public int helper(int idx, int coins[], int amount) {
+        int n = coins.length;
+        if (amount == 0) {
+            return 0;
+        }
+        if (idx == n) {
+            return Integer.MAX_VALUE;
         }
 
-        int notTake = helper(idx - 1, coins, amount, dp);
-        int take = (coins[idx] <= amount)
-            ? 1 + helper(idx, coins, amount - coins[idx], dp)
-            : (int)1e9;
+        int take = Integer.MAX_VALUE;
+        if (coins[idx] <= amount) {
+            int res = helper(idx, coins, amount - coins[idx]);
+            if (res != take) {
+                take = res + 1;
+            }
+        }
+        int notTake = helper(idx + 1, coins, amount);
 
-        dp[idx][amount] = Math.min(take, notTake);
-        return dp[idx][amount];
+        return Math.min(take, notTake);
     }
 }
