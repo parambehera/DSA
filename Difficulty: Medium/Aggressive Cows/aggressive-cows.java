@@ -1,30 +1,45 @@
+import java.util.Arrays;
+
 class Solution {
     public int aggressiveCows(int[] stalls, int k) {
-        // code here
+
         Arrays.sort(stalls);
-        int lb =1;
-        int hb =stalls[stalls.length-1]-stalls[0];
+
+        int low = 1;
+        int high = stalls[stalls.length - 1] - stalls[0];
         int ans = 0;
-        while(lb<=hb){
-            int mid = lb+(hb-lb)/2;
-            if(isPossible(stalls,k,mid)){
+
+        while (low <= high) {
+
+            int mid = low + (high - low) / 2;
+
+            if (fun(stalls, mid, k) == 0) {
                 ans = mid;
-                lb = mid+1;
-            }else{
-                hb = mid-1;
+                low = mid + 1;
+            } else {
+                high = mid - 1;
             }
         }
+
         return ans;
     }
-    public boolean isPossible(int stalls[],int k,int dist){
+
+    public int fun(int[] stalls, int diff, int k) {
+
+        int last = stalls[0];
         k--;
-        int prev = 0;
-        for(int i =1;i<stalls.length;i++){
-            if(Math.abs(stalls[i]-stalls[prev])>=dist){
+
+        for (int i = 1; i < stalls.length; i++) {
+
+            if (stalls[i] - last >= diff) {
+                last = stalls[i];
                 k--;
-                prev = i;
             }
+
+            if (k == 0)
+                return 0;
         }
-        return k<=0;
+
+        return -1;
     }
 }
