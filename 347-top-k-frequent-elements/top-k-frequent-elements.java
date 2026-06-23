@@ -6,25 +6,30 @@ class Solution {
         HashMap<Integer, Integer> freqMap = new HashMap<>();
         for (int num : nums)
             freqMap.put(num, freqMap.getOrDefault(num, 0) + 1);
-
-        // Step 2: Use a min heap based on frequency
-        PriorityQueue<Map.Entry<Integer, Integer>> minHeap =
-            new PriorityQueue<>((a, b) -> a.getValue() - b.getValue());
         
         // Fixed typo: changed 'entreySet()' to 'entrySet()'
-        for (Map.Entry<Integer, Integer> entry : freqMap.entrySet()) {
-            minHeap.add(entry);
-            if (minHeap.size() > k) {
-                minHeap.poll(); // Removes the element with the lowest frequency
+        int n = nums.length;
+        ArrayList <Integer> arr[]=new ArrayList[n+1];
+        for(int i=0;i<=n;i++){
+            arr[i] = new ArrayList <>();
+        }
+        for(Map.Entry<Integer,Integer> entry:freqMap.entrySet()){
+            int key = entry.getKey();
+            int val = entry.getValue();
+            arr[val].add(key);
+        }
+        int ans []= new int [k];
+        int j =0;
+        for(int i=n;i>=0 && j<k;i--){
+            ArrayList <Integer> list = arr[i];
+            for(int num :list){
+                 if(j<k){
+                    ans[j++] = num;
+                 }else{
+                    break;
+                 }
             }
         }
-
-        // Step 3: Extract elements from the min-heap into the result array
-        int[] result = new int[k];
-        for (int i = 0; i < k; i++) {
-            result[i] = minHeap.poll().getKey();
-        }
-        
-        return result;
+        return ans;
     }
 }
