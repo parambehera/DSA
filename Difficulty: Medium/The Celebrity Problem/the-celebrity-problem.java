@@ -1,21 +1,30 @@
-
-
 class Solution {
     public int celebrity(int mat[][]) {
         // code here
-        int idx = -1;
-        for(int i =0;i<mat.length;i++){
-            int cnt =0;
-            for(int j= 0;j<mat.length;j++){
-                idx = i;
-                if(mat[j][i]==1 && mat[i][j]==0){
-                    cnt++;
-                }
+        int n = mat.length;
+        int top =0;
+        int down = n-1;
+        while(top<down){
+            if(mat[top][down]==1){
+                top++;
             }
-            if(cnt == mat.length-1){
-                return idx;
+            else if(mat[down][top]==1){
+                down--;
+            }
+            else{
+                top++;
+                down--;
             }
         }
-        return -1;
+        if(top!=down){
+            return -1;
+        }
+        for(int  i=0;i<n;i++){
+            if(top!=i)
+            if(mat[top][i]!=0 || mat[i][top]!=1){
+                return -1;
+            }
+        }
+        return top;
     }
 }
