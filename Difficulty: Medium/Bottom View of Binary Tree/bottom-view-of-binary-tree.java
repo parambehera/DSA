@@ -1,47 +1,50 @@
-class Pair {
-    Node node;
-    int hd;
-    Pair(Node node, int hd) {
-        this.node = node;
-        this.hd = hd;
+/*
+Definition for Node
+class Node {
+    int data;
+    Node left;
+    Node right;
+
+    Node(int val) {
+        data = val;
+        left = right = null;
+
     }
 }
+*/
 
 class Solution {
+    class Pair{
+        int hd;
+        Node node;
+        Pair(int hd,Node node){
+            this.hd = hd;
+            this.node = node;
+        }
+    }
     public ArrayList<Integer> bottomView(Node root) {
-        ArrayList<Integer> ans = new ArrayList<>();
-        if (root == null) return ans;
-
-        Queue<Pair> q = new LinkedList<>();
-        HashMap<Integer, Integer> map = new HashMap<>();
-
-        q.add(new Pair(root, 0));
-
-        int min = 0, max = 0;
-
-        while (!q.isEmpty()) {
-            Pair curr = q.poll();
-            Node node = curr.node;
-            int hd = curr.hd;
-
-            // Only add the first node we encounter for this horizontal distance
-                map.put(hd, node.data);
-
-            if (node.left != null) {
-                q.add(new Pair(node.left, hd - 1));
-                min = Math.min(min, hd - 1);
-            }
-            if (node.right != null) {
-                q.add(new Pair(node.right, hd + 1));
-                max = Math.max(max, hd + 1);
+        // code here
+        ArrayList <Integer> list =new ArrayList <>();
+        TreeMap<Integer,Node> map = new TreeMap <>();
+        Queue <Pair> q = new LinkedList <>();
+        Pair p =new Pair(0,root);
+        q.add(p);
+        while(!q.isEmpty()){
+            int size = q.size();
+            for(int i=0;i<size;i++){
+              Pair p1 = q.poll();
+                map.put(p1.hd,p1.node);
+                if(p1.node.left!=null){
+                    q.offer(new Pair(p1.hd-1,p1.node.left));
+                }
+                if(p1.node.right!=null){
+                    q.offer(new Pair(p1.hd+1,p1.node.right));
+                }
             }
         }
-
-        // Collect nodes in order of their horizontal distance
-        for (int i = min; i <= max; i++) {
-            ans.add(map.get(i));
-        }
-
-        return ans;
+        for (Node node : map.values()) {
+            list.add(node.data);
+         }
+         return list;
     }
 }
