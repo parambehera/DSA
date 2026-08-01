@@ -4,11 +4,8 @@ class Solution {
         int n = nums.length;
         int sum=0;
         for(int i=0;i<n;i++){
-            sum +=nums[i];
-            gmax = Math.max(sum,gmax);
-            if(sum<0){
-                sum=0;
-            }
+           sum = Math.max(nums[i],sum+nums[i]);
+           gmax = Math.max(sum,gmax);    
         }
         return gmax;
     }
